@@ -1,6 +1,6 @@
 namespace MyLang.CodeAnalysis
 {
-    class SyntaxToken : SyntaxNode {
+    public sealed class SyntaxToken : SyntaxNode {
         public SyntaxToken(SyntaxKind kind, int pos, string? text, object? value) {
             Kind = kind;
             Pos = pos;

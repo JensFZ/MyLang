@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 using MyLang.CodeAnalysis;
 
 namespace MyLang {
-    class Program {
-        static void Main(string[] args) {
-            bool showTree = false;  
+    internal static class Program {
+        private static void Main() {
+            var showTree = false;  
             while (true)
             {
                 Console.Write("> ");                
@@ -25,10 +25,10 @@ namespace MyLang {
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
-                var color = Console.ForegroundColor;
                 if(showTree) {                    
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     PrettyPrint(syntaxTree.Root);
+                    Console.ResetColor();
                 }
 
                 if(syntaxTree.Diagnostics.Any()) {
@@ -36,12 +36,12 @@ namespace MyLang {
                     foreach(var diagnostic in syntaxTree.Diagnostics) {
                         Console.WriteLine(diagnostic);
                     }
+                    Console.ResetColor();
                 } else {
                     var evaluator = new Evaluator(syntaxTree.Root);
                     var result = evaluator.Evaluate();
                     Console.WriteLine(result);
                 }
-                Console.ForegroundColor = color;
 
             }
         }
@@ -60,7 +60,7 @@ namespace MyLang {
 
             Console.WriteLine();
 
-            indent += isLast ? "    ": "│   ";
+            indent += isLast ? "   ": "│  ";
             var lastChild = node.GetChildren().LastOrDefault();
 
             foreach(var child in node.GetChildren()) {

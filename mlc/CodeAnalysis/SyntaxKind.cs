@@ -1,6 +1,6 @@
 namespace MyLang.CodeAnalysis
 {
-    enum SyntaxKind {
+    public enum SyntaxKind {
         NumberToken,
         WhitespaceToken,
         PlusToken,
