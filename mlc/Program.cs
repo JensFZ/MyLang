@@ -1,135 +1,71 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System.Linq.Expressions;
 using System.Runtime.InteropServices;
+using MyLang.CodeAnalysis;
 
-while (true)
-{
-    Console.Write("> ");
-    var line = Console.ReadLine();
-    if(string.IsNullOrEmpty(line) ) {
-        return;
-    }
+namespace MyLang {
+    class Program {
+        static void Main(string[] args) {
+            bool showTree = false;  
+            while (true)
+            {
+                Console.Write("> ");                
+                var line = Console.ReadLine();
+                if(string.IsNullOrEmpty(line) ) {
+                    return;
+                }
 
-    var lexer = new Lexer(line);
-    while(true) {
-        var token = lexer.NextToken();
-        if(token.Kind == SyntaxKind.EndOfFileToken) {
-            break;
-        }
-        if (token.Value != null)
-        {
-            Console.WriteLine($"{token.Kind}: '{token.Text}' {token.Value}");
-        }
-        else
-        {
-            Console.WriteLine($"{token.Kind}: '{token.Text}'");
-        }
-    }
+                if(line=="#showTree") {
+                    showTree = !showTree;
+                    Console.WriteLine("Showing parse trees: " + (showTree ? "on" : "off"));
+                    continue;
+                }
+                else if(line == "#cls") {
+                    Console.Clear();
+                    continue;
+                }
 
-    // if(line == "1+2*3") {
-    //     Console.WriteLine("7");
-    // } else {
-    //     Console.WriteLine("error");
-    // }
-}
+                var syntaxTree = SyntaxTree.Parse(line);
+                var color = Console.ForegroundColor;
+                if(showTree) {                    
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    PrettyPrint(syntaxTree.Root);
+                }
 
-enum SyntaxKind {
-    NumberToken,
-    WhitespaceToken,
-    PlusToken,
-    MinusToken,
-    StarToken,
-    SlashToken,
-    OpenParenthesisToken,
-    CloseParenthesisToken,
-    BadToken,
-    EndOfFileToken
-}
+                if(syntaxTree.Diagnostics.Any()) {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    foreach(var diagnostic in syntaxTree.Diagnostics) {
+                        Console.WriteLine(diagnostic);
+                    }
+                } else {
+                    var evaluator = new Evaluator(syntaxTree.Root);
+                    var result = evaluator.Evaluate();
+                    Console.WriteLine(result);
+                }
+                Console.ForegroundColor = color;
 
-class SyntaxToken {
-    public SyntaxToken(SyntaxKind kind, int pos, string text, object value) {
-        Kind = kind;
-        Pos = pos;
-        Text = text;
-        Value = value;
-    }
-
-    public SyntaxKind Kind { get; }
-    public int Pos { get; }
-    public string Text { get; }
-    public object Value { get; }
-}
-
-class Lexer {
-    private readonly string _text;
-    private int _pos;
-
-    public Lexer(string text) {
-        _text = text;
-    }
-
-    private char Current {
-        get {
-            if(_pos >= _text.Length) {
-                return '\0';
             }
-            return _text[_pos];
-        }
-    }
-
-    private void Next() {
-        _pos++;
-    }
-
-    public SyntaxToken NextToken() {
-
-        if(_pos >= _text.Length) {
-            return new SyntaxToken(SyntaxKind.EndOfFileToken, _pos, "\0", null);
         }
 
-        if(char.IsDigit(Current) ) {
-            var start = _pos;
-            while(char.IsDigit(Current) ) {
-                Next();
+        static void PrettyPrint(SyntaxNode node, string indent = "", bool isLast = true) {
+
+            var marker = isLast ? "└──" : "├──";
+
+            Console.Write(indent);
+            Console.Write(marker);
+            Console.Write(node.Kind);
+            if(node is SyntaxToken t && t.Value != null) {
+                Console.Write(" ");
+                Console.Write(t.Value);
             }
 
-            var length = _pos - start;
+            Console.WriteLine();
 
-            var text = _text.Substring(start, length);
-            int.TryParse(text, out var value);
-            return new SyntaxToken(SyntaxKind.NumberToken, start, text, value);
-        }
+            indent += isLast ? "    ": "│   ";
+            var lastChild = node.GetChildren().LastOrDefault();
 
-        if(char.IsWhiteSpace(Current)) {
-            var start = _pos;
-            while(char.IsWhiteSpace(Current)) {
-                Next();
+            foreach(var child in node.GetChildren()) {
+                PrettyPrint(child, indent, child == lastChild);
             }
-            var length = _pos - start;
-            var text = _text.Substring(start, length);
-
-            return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
         }
-
-        if(Current == '+') {
-            return new SyntaxToken(SyntaxKind.PlusToken, _pos++, "+", null);
-        }
-        if(Current == '-') {
-            return new SyntaxToken(SyntaxKind.MinusToken, _pos++, "-", null);
-        }
-        if(Current == '*') {
-            return new SyntaxToken(SyntaxKind.StarToken, _pos++, "*", null);
-        }
-        if(Current == '/') {
-            return new SyntaxToken(SyntaxKind.SlashToken, _pos++, "/", null);
-        }
-        if(Current == '(') {
-            return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _pos++, "(", null);
-        }
-        if(Current == ')') {
-            return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _pos++, ")", null);
-        }
-
-        return new SyntaxToken(SyntaxKind.BadToken, _pos++, _text.Substring(_pos -1,1), null);
-
     }
 }
