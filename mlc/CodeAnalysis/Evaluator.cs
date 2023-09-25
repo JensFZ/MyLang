@@ -14,15 +14,15 @@ namespace MyLang.CodeAnalysis
 
         public ExpressionSyntax _root { get; }
 
-        public int Evaluate()
+        public int? Evaluate()
         {
             return EvaluateExpression(_root);
         }
 
-        private int EvaluateExpression(ExpressionSyntax node)
+        private int? EvaluateExpression(ExpressionSyntax node)
         {
             if(node is NumberExpressionSyntax n) {
-                return (int) n.NumberToken.Value;
+                return (int?) n.NumberToken.Value;
             }
 
             if(node is BinaryExpressionSyntax b) {

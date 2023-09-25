@@ -1,7 +1,7 @@
 namespace MyLang.CodeAnalysis
 {
     class SyntaxToken : SyntaxNode {
-        public SyntaxToken(SyntaxKind kind, int pos, string text, object value) {
+        public SyntaxToken(SyntaxKind kind, int pos, string? text, object? value) {
             Kind = kind;
             Pos = pos;
             Text = text;
@@ -10,8 +10,8 @@ namespace MyLang.CodeAnalysis
 
         public override SyntaxKind Kind { get; }
         public int Pos { get; }
-        public string Text { get; }
-        public object Value { get; }
+        public string? Text { get; }
+        public object? Value { get; }
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
