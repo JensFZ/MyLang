@@ -101,7 +101,7 @@ namespace MyLang.CodeAnalysis
                 return new ParenthesizedExpressionSyntax(left, expression, right);
             }
             var numberToken = MatchToken(SyntaxKind.NumberToken);
-            return new NumberExpressionSyntax(numberToken);
+            return new LiteralExpressionSyntax(numberToken);
         }
     }
 }
