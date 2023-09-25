@@ -15,7 +15,7 @@ namespace MyLang.CodeAnalysis
         CloseParenthesisToken,
 
         // Expressions
-        NumberExpression,
+        LiteralExpression,
         BinaryExpression,
         ParenthesizedExpression
     }
