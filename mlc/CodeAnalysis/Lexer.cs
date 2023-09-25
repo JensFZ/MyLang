@@ -25,7 +25,7 @@ namespace MyLang.CodeAnalysis
             _pos++;
         }
 
-        public SyntaxToken NextToken() {
+        public SyntaxToken Lex() {
 
             if(_pos >= _text.Length) {
                 return new SyntaxToken(SyntaxKind.EndOfFileToken, _pos, "\0", null);
@@ -58,23 +58,20 @@ namespace MyLang.CodeAnalysis
                 return new SyntaxToken(SyntaxKind.WhitespaceToken, start, text, null);
             }
 
-            if(Current == '+') {
-                return new SyntaxToken(SyntaxKind.PlusToken, _pos++, "+", null);
-            }
-            if(Current == '-') {
-                return new SyntaxToken(SyntaxKind.MinusToken, _pos++, "-", null);
-            }
-            if(Current == '*') {
-                return new SyntaxToken(SyntaxKind.StarToken, _pos++, "*", null);
-            }
-            if(Current == '/') {
-                return new SyntaxToken(SyntaxKind.SlashToken, _pos++, "/", null);
-            }
-            if(Current == '(') {
-                return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _pos++, "(", null);
-            }
-            if(Current == ')') {
-                return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _pos++, ")", null);
+            switch (Current)
+            {
+                case '+':
+                    return new SyntaxToken(SyntaxKind.PlusToken, _pos++, "+", null);
+                case '-':
+                    return new SyntaxToken(SyntaxKind.MinusToken, _pos++, "-", null);
+                case '*':
+                    return new SyntaxToken(SyntaxKind.StarToken, _pos++, "*", null);
+                case '/':
+                    return new SyntaxToken(SyntaxKind.SlashToken, _pos++, "/", null);
+                case '(':
+                    return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _pos++, "(", null);
+                case ')':
+                    return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _pos++, ")", null);
             }
 
             _diagnostics.Add($"ERROR: bad character input: '{Current}'");
