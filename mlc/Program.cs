@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using MyLang.CodeAnalysis;
 using MyLang.CodeAnalysis.Syntax;
+using MyLang.CodeAnalysis.Binding;
 
 namespace MyLang {
     internal static class Program {
@@ -26,6 +27,10 @@ namespace MyLang {
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
+                var binder = new Binder();
+                var BoundExpression = binder.BindExpression(syntaxTree.Root);
+
+                var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
                 
                 if(showTree) {                    
                     Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -33,14 +38,14 @@ namespace MyLang {
                     Console.ResetColor();
                 }
 
-                if(syntaxTree.Diagnostics.Any()) {
+                if (diagnostics.Any()) {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    foreach(var diagnostic in syntaxTree.Diagnostics) {
+                    foreach(var diagnostic in diagnostics) {
                         Console.WriteLine(diagnostic);
                     }
                     Console.ResetColor();
                 } else {
-                    var evaluator = new Evaluator(syntaxTree.Root);
+                    var evaluator = new Evaluator(BoundExpression);
                     var result = evaluator.Evaluate();
                     Console.WriteLine(result);
                 }

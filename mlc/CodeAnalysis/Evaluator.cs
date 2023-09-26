@@ -1,62 +1,64 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MyLang.CodeAnalysis.Binding;
 using MyLang.CodeAnalysis.Syntax;   
 
 namespace MyLang.CodeAnalysis
 {
 
-    public sealed class Evaluator
+    internal sealed class Evaluator
     {
-        public Evaluator(ExpressionSyntax root)
+        
+        public Evaluator(BoundExpression root)
         {
             _root = root;
         }
 
-        public ExpressionSyntax _root { get; }
+        public BoundExpression _root { get; }
+
 
         public int? Evaluate()
         {
             return EvaluateExpression(_root);
         }
 
-        private int? EvaluateExpression(ExpressionSyntax node)
+        private int? EvaluateExpression(BoundExpression node)
         {
-            if(node is LiteralExpressionSyntax n) {
-                return (int?) n.LiteralToken.Value;
+            if(node is BoundLiteralExpression n) {
+                return (int?) n.Value;
             }
 
-            if(node is UnaryExpressionSyntax u) {
+            if(node is BoundUnaryExpression u) {
                 var operand = EvaluateExpression(u.Operand);
-                switch(u.OperatorToken.Kind) {
-                    case SyntaxKind.PlusToken:
+                switch(u.OperatorKind) {
+                    case BoundUnaryOperatorKind.Identity:
                         return operand;
-                    case SyntaxKind.MinusToken:
+                    case BoundUnaryOperatorKind.Negation:
                         return -operand;
                     default:
-                        throw new Exception($"Unexpected unary operator {u.OperatorToken.Kind}");
+                        throw new Exception($"Unexpected unary operator {u.OperatorKind}");
                 }
             }
 
-            if(node is BinaryExpressionSyntax b) {
+            if(node is BoundBinaryExpression b) {
                 var left = EvaluateExpression(b.Left);
                 var right = EvaluateExpression(b.Right);
 
-                switch(b.OperatorToken.Kind) {
-                    case SyntaxKind.PlusToken:
+                switch(b.OperatorKind) {
+                    case BoundBinaryOperatorKind.Addition:
                         return left + right;
-                    case SyntaxKind.MinusToken:
+                    case BoundBinaryOperatorKind.Subtraction:
                         return left - right;
-                    case SyntaxKind.StarToken:
+                    case BoundBinaryOperatorKind.Multiplication:
                         return left * right;
-                    case SyntaxKind.SlashToken:
+                    case BoundBinaryOperatorKind.Division:
                         return left / right;
+                    default:
+                        throw new Exception($"Unexpected binary operator {b.OperatorKind}");
                 }            
             }
 
-            if(node is ParenthesizedExpressionSyntax p) {
-                return EvaluateExpression(p.Expression);
-            }
             throw new Exception($"Unexpected binary operator {node.Kind}");
         }
     }
