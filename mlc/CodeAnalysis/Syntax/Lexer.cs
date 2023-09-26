@@ -1,4 +1,4 @@
-namespace MyLang.CodeAnalysis
+namespace MyLang.CodeAnalysis.Syntax
 {
     internal sealed class Lexer {
         private readonly string _text;

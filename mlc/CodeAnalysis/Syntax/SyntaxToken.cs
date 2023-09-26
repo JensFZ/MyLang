@@ -1,4 +1,4 @@
-namespace MyLang.CodeAnalysis
+namespace MyLang.CodeAnalysis.Syntax
 {
     public sealed class SyntaxToken : SyntaxNode {
         public SyntaxToken(SyntaxKind kind, int pos, string? text, object? value) {

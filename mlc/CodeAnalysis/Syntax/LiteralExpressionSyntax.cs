@@ -1,4 +1,4 @@
-namespace MyLang.CodeAnalysis
+namespace MyLang.CodeAnalysis.Syntax
 {
     public sealed class LiteralExpressionSyntax : ExpressionSyntax {
         public LiteralExpressionSyntax(SyntaxToken literalToken) {

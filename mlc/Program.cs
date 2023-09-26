@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using MyLang.CodeAnalysis;
+using MyLang.CodeAnalysis.Syntax;
 
 namespace MyLang {
     internal static class Program {
@@ -25,6 +26,7 @@ namespace MyLang {
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
+                
                 if(showTree) {                    
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     PrettyPrint(syntaxTree.Root);
