@@ -5,6 +5,8 @@ namespace MyLang.CodeAnalysis.Binding
         Subtraction,
         Multiplication,
         Division,
+        LogicalAnd,
+        LogicalOr,
     }
 
 }

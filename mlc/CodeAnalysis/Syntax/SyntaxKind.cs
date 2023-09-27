@@ -14,6 +14,9 @@ namespace MyLang.CodeAnalysis.Syntax
         OpenParenthesisToken,
         CloseParenthesisToken,
         IdentifierToken,
+        BangToken,
+        AmpersandAmpersandToken,
+        PipePipeToken,
 
         //Keywords
         FalseKeyword,
