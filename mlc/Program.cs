@@ -28,7 +28,7 @@ namespace MyLang {
 
                 var syntaxTree = SyntaxTree.Parse(line);
                 var binder = new Binder();
-                var BoundExpression = binder.BindExpression(syntaxTree.Root);
+                var boundExpression = binder.BindExpression(syntaxTree.Root);
 
                 var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
                 
@@ -45,7 +45,7 @@ namespace MyLang {
                     }
                     Console.ResetColor();
                 } else {
-                    var evaluator = new Evaluator(BoundExpression);
+                    var evaluator = new Evaluator(boundExpression);
                     var result = evaluator.Evaluate();
                     Console.WriteLine(result);
                 }
