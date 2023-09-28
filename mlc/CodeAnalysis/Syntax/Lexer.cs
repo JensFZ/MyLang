@@ -23,7 +23,7 @@ namespace MyLang.CodeAnalysis.Syntax
             {
                 return '\0';
             }
-            return _text[_pos];
+            return _text[index];
         }
 
         private void Next() {
