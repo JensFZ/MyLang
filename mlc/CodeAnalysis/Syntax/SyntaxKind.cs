@@ -17,6 +17,8 @@ namespace MyLang.CodeAnalysis.Syntax
         BangToken,
         AmpersandAmpersandToken,
         PipePipeToken,
+        EqualsEqualsToken,
+        BangEqualsToken,
 
         //Keywords
         FalseKeyword,

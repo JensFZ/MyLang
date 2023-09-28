@@ -88,8 +88,6 @@ namespace MyLang.CodeAnalysis.Syntax
                     return new SyntaxToken(SyntaxKind.OpenParenthesisToken, _pos++, "(", null);
                 case ')':
                     return new SyntaxToken(SyntaxKind.CloseParenthesisToken, _pos++, ")", null);
-                case '!':
-                    return new SyntaxToken(SyntaxKind.BangToken, _pos++, "!", null);
                 case '&':
                     if(Lookahead == '&') {
                         return new SyntaxToken(SyntaxKind.AmpersandAmpersandToken, _pos += 2, "&&", null);
@@ -100,6 +98,17 @@ namespace MyLang.CodeAnalysis.Syntax
                         return new SyntaxToken(SyntaxKind.PipePipeToken, _pos += 2, "||", null);
                     }
                     break;
+                case '=':
+                    if(Lookahead == '=') {
+                        return new SyntaxToken(SyntaxKind.EqualsEqualsToken, _pos += 2, "==", null);
+                    }
+                    break;
+                case '!':
+                    if(Lookahead == '=') {
+                        return new SyntaxToken(SyntaxKind.BangEqualsToken, _pos += 2, "!=", null);
+                    } else {
+                        return new SyntaxToken(SyntaxKind.BangToken, _pos++, "!", null);
+                    }
             }
 
             _diagnostics.Add($"ERROR: bad character input: '{Current}'");

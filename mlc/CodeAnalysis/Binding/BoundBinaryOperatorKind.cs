@@ -7,6 +7,8 @@ namespace MyLang.CodeAnalysis.Binding
         Division,
         LogicalAnd,
         LogicalOr,
+        Equals,
+        NotEquals,
     }
 
 }
