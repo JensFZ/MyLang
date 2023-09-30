@@ -2,8 +2,6 @@ using MyLang.CodeAnalysis.Syntax;
 
 namespace MyLang.CodeAnalysis.Binding
 {
-
-
     internal sealed class Binder {
 
         private readonly List<string> _diagnostics = new List<string>();

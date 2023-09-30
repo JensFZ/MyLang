@@ -27,10 +27,10 @@ namespace MyLang {
                 }
 
                 var syntaxTree = SyntaxTree.Parse(line);
-                var binder = new Binder();
-                var boundExpression = binder.BindExpression(syntaxTree.Root);
+                var compilation = new Compilation(syntaxTree);
+                var result = compilation.Evaluate();
 
-                var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+                var diagnostics = result.Diagnostics;
                 
                 if(showTree) {                    
                     Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -38,17 +38,16 @@ namespace MyLang {
                     Console.ResetColor();
                 }
 
-                if (diagnostics.Any()) {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    foreach(var diagnostic in diagnostics) {
+                if (!diagnostics.Any()) {
+                    Console.WriteLine(result.Value);
+                } else {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    foreach (var diagnostic in diagnostics) {
                         Console.WriteLine(diagnostic);
                     }
                     Console.ResetColor();
-                } else {
-                    var evaluator = new Evaluator(boundExpression);
-                    var result = evaluator.Evaluate();
-                    Console.WriteLine(result);
                 }
+
 
             }
         }
